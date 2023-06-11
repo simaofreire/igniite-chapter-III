@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import styles from './postList.module.scss';
 import { FiUser, FiCalendar } from 'react-icons/fi';
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 interface PostListProps {
   post: {
@@ -15,6 +17,12 @@ interface PostListProps {
 }
 
 export default function PostList({ post }: PostListProps) {
+  const formattedDate = format(
+    new Date(post.first_publication_date),
+    'dd MMM yyyy',
+    { locale: ptBR }
+  );
+
   return (
     <div className={styles.posts}>
       <Link href={`/post/${post.uid}`}>
@@ -24,7 +32,7 @@ export default function PostList({ post }: PostListProps) {
           <ul>
             <li>
               <FiCalendar />
-              {post.first_publication_date}
+              {formattedDate}
             </li>
             <li>
               <FiUser />

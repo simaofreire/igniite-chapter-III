@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { useState } from 'react';
 import styles from './home.module.scss';
+import Head from 'next/head';
 interface Post {
   uid?: string;
   first_publication_date: string | null;
@@ -60,6 +61,9 @@ export default function Home({ postsPagination }: HomeProps) {
 
   return (
     <main className={commonStyles.container}>
+      <Head>
+        <title> Home | spacetraveling</title>
+      </Head>
       <Header />
 
       {posts.map(post => (
@@ -72,7 +76,7 @@ export default function Home({ postsPagination }: HomeProps) {
           onClick={handleNextPage}
           className={styles.button}
         >
-          Carregar mais
+          Carregar mais posts
         </button>
       )}
     </main>
@@ -85,29 +89,13 @@ export const getStaticProps: GetStaticProps = async () => {
     pageSize: 2,
     orderings: {
       field: 'last_publication_date',
-      direction: 'desc',
+      direction: 'asc',
     },
-  });
-
-  const posts = postsResponse.results.map(post => {
-    return {
-      uid: post.uid,
-      first_publication_date: format(
-        new Date(post.first_publication_date),
-        'dd MMM yyyy',
-        { locale: ptBR }
-      ),
-      data: {
-        title: post.data.title,
-        subtitle: post.data.subtitle,
-        author: post.data.author,
-      },
-    };
   });
 
   const postsPagination = {
     next_page: postsResponse.next_page,
-    results: posts,
+    results: postsResponse.results,
   };
 
   return { props: { postsPagination } };
